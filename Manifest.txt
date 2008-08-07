@@ -1,0 +1,6 @@
+History.txt
+License.txt
+PostInstall.txt
+README.txt
+lib/config_reader.rb
+lib/config_reader/version.rb

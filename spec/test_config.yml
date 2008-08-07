@@ -1,0 +1,8 @@
+--- 
+defaults:
+  app_name: default_app
+  nested_key: 
+    value: 'test'
+
+test:
+  app_name: test_app
