@@ -1,3 +1,13 @@
+== 0.0.4 2008-12-08
+* fix the environment merging issue, for real this time
+
+== 0.0.3 2008-12-02
+* fix the environment merging issue
+
+== 0.0.2 2008-09-10
+* have find_config return the file if it exists instead of looking in . and 
+./config
+
 == 0.0.1 2008-08-06
 
 * 1 major enhancement:
