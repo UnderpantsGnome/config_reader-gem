@@ -45,7 +45,7 @@ class ConfigReader
     end
 
     def [](key)
-      config[key]
+      config[key] || config[key.to_s]
     end
 
     def find_config
@@ -59,7 +59,7 @@ class ConfigReader
     end
 
     def method_missing(key)
-      config[key.to_s] || super
+      config[key.to_s] || nil
     end
 
     def inspect

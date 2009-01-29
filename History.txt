@@ -1,3 +1,7 @@
+== 0.0.5 2009-01-29
+* handle keys as ['foo'], [:foo] and .foo
+* return nil on non-existent key instead of error
+
 == 0.0.4 2008-12-08
 * fix the environment merging issue, for real this time
 
