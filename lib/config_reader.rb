@@ -70,6 +70,6 @@ end
 
 class Hash
   def method_missing(key)
-    self[key.to_s] || super
+    has_key?(key) || has_key?(key.to_s) ? self[key] || self[key.to_s] : super
   end
 end
