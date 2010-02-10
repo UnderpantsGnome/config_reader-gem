@@ -1,6 +1,34 @@
 = ConfigReader
 
-Provides a way to manage environment specific configuration settings.
+Provides a way to manage environment specific configuration settings. It will use the defaults for any environment and override any values you specify for an environment.
+
+Example config file:
+
+  defaults:
+    site_url: http://localhost:3000
+    host_name: CHANGE-ME.com
+    mail_from: noreply@CHANGE_ME.com
+    site_name: CHANGE-ME
+    admin_email: admin@CHANGE-ME.com
+    blackbird: true
+
+  production:
+    site_url: http://CHANGE-ME.com
+    blackbird: false
+
+  test:
+    blackbird: false
+
+Example class:
+
+  class MyConfig < ConfigReader
+    self.config_file = 'config/my_config.yml'
+  end
+
+Usage:
+
+  MyConfig.mail_from   #=> noreply@CHANGE_ME.com
+  MyConfig[:mail_from] #=> noreply@CHANGE_ME.com
 
 == Note on Patches/Pull Requests
  
@@ -14,4 +42,4 @@ Provides a way to manage environment specific configuration settings.
 
 == Copyright
 
-Copyright (c) 2010 Michael Moen. See LICENSE for details.
+Copyright (c) 2008 Michael Moen. See LICENSE for details.
