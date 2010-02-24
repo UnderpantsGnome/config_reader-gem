@@ -1,3 +1,8 @@
+== 0.0.7 2010-02-14
+* moved to jeweler
+* removed the annoying post install message
+* updated specs
+
 == 0.0.6 2009-04-02
 * handle keys as ['foo'], [:foo] and .foo for real this time
 * return nil on non-existent key instead of error
