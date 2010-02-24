@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{config_reader}
-  s.version = "0.0.6"
+  s.version = "0.0.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Moen"]
-  s.date = %q{2010-02-10}
+  s.date = %q{2010-02-24}
   s.description = %q{Provides a way to manage environment specific configuration settings.}
   s.email = %q{michael@underpantsgnome.com}
   s.extra_rdoc_files = [
@@ -19,10 +19,10 @@ Gem::Specification.new do |s|
     ".gitignore",
      "History.txt",
      "License.txt",
-     "Manifest.txt",
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "config_reader.gemspec",
      "lib/config_reader.rb",
      "spec/config_reader_spec.rb",
      "spec/spec.opts",
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/UnderpantsGnome/config_reader-gem}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Provides a way to manage environment specific configuration settings.}
   s.test_files = [
     "spec/config_reader_spec.rb",
