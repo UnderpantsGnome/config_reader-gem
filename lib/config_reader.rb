@@ -30,7 +30,9 @@ class ConfigReader
 
       raise 'No config found' unless conf
 
-      if defined?(RAILS_ENV)
+      if defined?(Rails) && Rails.env
+        env = Rails.env
+      elsif defined?(RAILS_ENV)
         env = RAILS_ENV
       elsif defined?(APP_ENV)
         env = APP_ENV
