@@ -1,4 +1,7 @@
+require "config_reader/version"
+require "config_reader/magic_hash"
 require 'yaml'
+
 begin
   require 'erb'
 rescue LoadError
@@ -40,11 +43,11 @@ class ConfigReader
 
       _conf = conf['defaults']
       _conf.merge!(conf[env]) if conf[env]
-      _conf
+      ConfigReader::MagicHash.convert_hash(_conf)
     end
 
     def [](key)
-      config[key] || config[key.to_s]
+      config[key.to_sym]
     end
 
     def find_config
@@ -58,17 +61,11 @@ class ConfigReader
     end
 
     def method_missing(key)
-      config[key.to_s] || nil
+      config[key] || nil
     end
 
     def inspect
       puts config.inspect
     end
-  end
-end
-
-class Hash
-  def method_missing(key)
-    has_key?(key) || has_key?(key.to_s) ? self[key] || self[key.to_s] : super
   end
 end
