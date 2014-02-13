@@ -33,10 +33,16 @@ class ConfigReader
 
       raise 'No config found' unless conf
 
-      if defined?(Rails) && Rails.env
+      if defined?(Rails) and Rails.env
         env = Rails.env
       elsif defined?(RAILS_ENV)
         env = RAILS_ENV
+      elsif defined?(Padrino) and Padrino.env
+        env = Padrino.env
+      elsif defined?(PADRINO_ENV)
+        env = PADRINO_ENV
+      elsif ENV['RACK_ENV']
+        env = ENV['RACK_ENV']
       elsif defined?(APP_ENV)
         env = APP_ENV
       end

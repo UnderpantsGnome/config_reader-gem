@@ -20,9 +20,7 @@ class ConfigReader
     end
 
     def method_missing(key)
-      has_key?(key) ?
-        fetch(key) :
-        super
+      has_key?(key) ? fetch(key) : super
     end
 
   end
