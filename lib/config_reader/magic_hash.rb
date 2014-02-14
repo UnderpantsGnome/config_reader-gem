@@ -19,7 +19,7 @@ class ConfigReader
       super(key.to_sym)
     end
     
-    ## Let everything key added in future  be a symbol
+    ## Let every key added in future  be a symbol
     def []=(key,value)
       super(key.to_sym,value)
     end  
