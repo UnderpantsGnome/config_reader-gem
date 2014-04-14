@@ -6,6 +6,5 @@ require 'config_reader'
 require 'test_config'
 require 'sekrets_config'
 
-Spec::Runner.configure do |config|
-
-end
+ENV['RACK_ENV'] = 'test'
+ENV['SEKRETS_KEY'] = 'shhh'

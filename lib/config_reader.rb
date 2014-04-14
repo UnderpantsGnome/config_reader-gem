@@ -22,6 +22,8 @@ class ConfigReader
     end
 
     def reload
+# require 'pry'
+# binding.pry
       merge_configs(find_env, load_config, load_sekrets)
     end
 

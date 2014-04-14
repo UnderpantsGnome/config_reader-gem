@@ -3,15 +3,15 @@ require 'spec_helper'
 describe "ConfigReader" do
   describe "parsing a YAML file" do
     it "should find values with method_missing" do
-      TestConfig.app_name.should == 'default_app'
+      TestConfig.app_name.should == 'test_app'
     end
 
     it "should find values using [] and a string" do
-      TestConfig['app_name'].should == 'default_app'
+      TestConfig['app_name'].should == 'test_app'
     end
 
     it "should find values using [] and a symbol" do
-      TestConfig[:app_name].should == 'default_app'
+      TestConfig[:app_name].should == 'test_app'
     end
 
     it "should find nested values using method_missing" do
@@ -45,15 +45,15 @@ describe "ConfigReader" do
 
     describe "parsing a YAML file" do
       it "should find values with method_missing" do
-        SekretsConfig.app_name.should == 'default_app_sekret'
+        SekretsConfig.app_name.should == 'test_app_sekret'
       end
 
       it "should find values using [] and a string" do
-        SekretsConfig['app_name'].should == 'default_app_sekret'
+        SekretsConfig['app_name'].should == 'test_app_sekret'
       end
 
       it "should find values using [] and a symbol" do
-        SekretsConfig[:app_name].should == 'default_app_sekret'
+        SekretsConfig[:app_name].should == 'test_app_sekret'
       end
 
       it "should find nested values using method_missing" do
