@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = ConfigReader::VERSION
   s.authors     = ['Michael Moen']
   s.email       = ['michael@underpantsgnome.com']
-  s.homepage    = ''
+  s.homepage    = 'https://github.com/UnderpantsGnome/config_reader-gem'
   s.summary     = %q{Provides a way to manage environment specific configuration settings.}
   s.description = %q{Provides a way to manage environment specific configuration settings.}
 
