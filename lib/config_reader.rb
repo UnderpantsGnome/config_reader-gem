@@ -9,10 +9,9 @@ rescue LoadError
 end
 
 class ConfigReader
-  @config_file = nil
-  @config = nil
-
   class << self
+    attr_accessor :config_file, :config, :sekrets_file, :sekrets
+
     def config
       @config = nil unless defined?(@config)
       @config ||= reload
@@ -31,6 +30,15 @@ class ConfigReader
         conf = YAML.load(File.open(find_config).read)
       end
 
+      if @sekrets_file
+        begin
+          require 'sekrets'
+          self.sekrets = ::Sekrets.settings_for(@sekrets_file)
+        rescue LoadError
+          $stderr.puts "You specified a sekrets, but the sekrets gem isn't available."
+        end
+      end
+
       raise 'No config found' unless conf
 
       if defined?(Rails) && Rails.env
@@ -42,7 +50,9 @@ class ConfigReader
       end
 
       _conf = conf['defaults']
+      _conf.merge!(sekrets['defaults']) if sekrets
       _conf.merge!(conf[env]) if conf[env]
+      _conf.merge!(sekrets[env]) if sekrets && sekrets[env]
       ConfigReader::MagicHash.convert_hash(_conf)
     end
 
