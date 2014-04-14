@@ -11,19 +11,21 @@ class ConfigReader
           magic_hash[key.to_sym] = value
         end
       end
-
       magic_hash
     end
 
+    ## Dont throw any error 
     def [](key)
-      fetch(key.to_sym)
+      super(key.to_sym)
     end
+    
+    ## Let every key added in future  be a symbol
+    def []=(key,value)
+      super(key.to_sym,value)
+    end  
 
     def method_missing(key)
-      has_key?(key) ?
-        fetch(key) :
-        super
+      has_key?(key) ? fetch(key) : super
     end
-
   end
 end

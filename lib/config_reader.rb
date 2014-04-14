@@ -25,25 +25,32 @@ class ConfigReader
     def reload
       raise 'No config file set' unless @config_file
 
-      if defined?(ERB)
-        conf = YAML.load(ERB.new(File.open(find_config).read).result)
+      conf = if defined?(ERB)
+        YAML.load(ERB.new(File.open(find_config).read).result)
       else
-        conf = YAML.load(File.open(find_config).read)
+        YAML.load(File.open(find_config).read)
       end
 
       raise 'No config found' unless conf
+      ## because Padrino.env return a symbol
+      _conf = ConfigReader::MagicHash.convert_hash(conf)
 
-      if defined?(Rails) && Rails.env
-        env = Rails.env
+      env = if defined?(Rails) and Rails.env
+        Rails.env
       elsif defined?(RAILS_ENV)
-        env = RAILS_ENV
+        RAILS_ENV
+      elsif defined?(Padrino) and Padrino.env
+        Padrino.env
+      elsif defined?(PADRINO_ENV)
+        PADRINO_ENV
+      elsif ENV['RACK_ENV']
+        ENV['RACK_ENV']
       elsif defined?(APP_ENV)
-        env = APP_ENV
+        APP_ENV
       end
 
-      _conf = conf['defaults']
-      _conf.merge!(conf[env]) if conf[env]
-      ConfigReader::MagicHash.convert_hash(_conf)
+      _default_conf = _conf['defaults'] || {}
+      _default_conf.merge(_conf[env] || {})
     end
 
     def [](key)
