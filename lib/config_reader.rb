@@ -10,7 +10,7 @@ end
 
 class ConfigReader
   class << self
-    attr_accessor :config_file, :config, :sekrets_file, :sekrets
+    attr_accessor :config_file, :config, :sekrets_file
 
     def config
       @config = nil unless defined?(@config)
@@ -22,38 +22,7 @@ class ConfigReader
     end
 
     def reload
-      raise 'No config file set' unless @config_file
-
-      if defined?(ERB)
-        conf = YAML.load(ERB.new(File.open(find_config).read).result)
-      else
-        conf = YAML.load(File.open(find_config).read)
-      end
-
-      if @sekrets_file
-        begin
-          require 'sekrets'
-          self.sekrets = ::Sekrets.settings_for(@sekrets_file)
-        rescue LoadError
-          $stderr.puts "You specified a sekrets, but the sekrets gem isn't available."
-        end
-      end
-
-      raise 'No config found' unless conf
-
-      if defined?(Rails) && Rails.env
-        env = Rails.env
-      elsif defined?(RAILS_ENV)
-        env = RAILS_ENV
-      elsif defined?(APP_ENV)
-        env = APP_ENV
-      end
-
-      _conf = conf['defaults']
-      _conf.merge!(sekrets['defaults']) if sekrets
-      _conf.merge!(conf[env]) if conf[env]
-      _conf.merge!(sekrets[env]) if sekrets && sekrets[env]
-      ConfigReader::MagicHash.convert_hash(_conf)
+      merge_configs(find_env, load_config, load_sekrets)
     end
 
     def [](key)
@@ -67,6 +36,7 @@ class ConfigReader
         config_file = File.join(dir, @config_file)
         return config_file if File.exist?(config_file)
       end
+
       ''
     end
 
@@ -76,6 +46,60 @@ class ConfigReader
 
     def inspect
       puts config.inspect
+    end
+
+    def find_env
+      if defined?(Rails) && Rails.env
+        Rails.env
+      elsif defined?(RAILS_ENV)
+        RAILS_ENV
+      elsif defined?(Padrino) && Padrino.env
+        Padrino.env.to_s
+      elsif defined?(PADRINO_ENV)
+        PADRINO_ENV
+      elsif ENV['RACK_ENV']
+        ENV['RACK_ENV']
+      elsif defined?(APP_ENV)
+        APP_ENV
+      end
+    end
+
+    def load_config
+      raise 'No config file set' unless @config_file
+
+      if defined?(ERB)
+        conf = YAML.load(ERB.new(File.open(find_config).read).result)
+      else
+        conf = YAML.load(File.open(find_config).read)
+      end
+
+      raise 'No config found' unless conf
+
+      conf
+    end
+
+    def load_sekrets
+      sekrets = {}
+
+      if @sekrets_file
+        begin
+          require 'sekrets'
+          sekrets = ::Sekrets.settings_for(@sekrets_file)
+          raise 'No sekrets found' unless sekrets
+        rescue LoadError
+          $stderr.puts "You specified a sekrets_file, but the sekrets gem isn't available."
+        end
+      end
+
+      sekrets
+    end
+
+    def merge_configs(env, conf, sekrets)
+      _conf = conf['defaults']
+      _conf.merge!(sekrets['defaults']) if sekrets && sekrets['defaults']
+      _conf.merge!(conf[env]) if conf[env]
+      _conf.merge!(sekrets[env]) if sekrets && sekrets[env]
+      ConfigReader::MagicHash.convert_hash(_conf)
     end
   end
 end
