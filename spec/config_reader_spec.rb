@@ -1,6 +1,21 @@
 require 'spec_helper'
 
 describe "ConfigReader" do
+  describe "setting values" do
+
+    it "should fail with []=" do
+      expect {
+        TestConfig[:app_name] = 'test_app'
+      }.to raise_error
+    end
+
+    it "should fail with #key =" do
+      expect {
+        TestConfig.app_name = 'test_app'
+      }.to raise_error
+    end
+  end
+
   describe "parsing a YAML file" do
     it "should find values with method_missing" do
       TestConfig.app_name.should == 'test_app'

@@ -22,8 +22,6 @@ class ConfigReader
     end
 
     def reload
-# require 'pry'
-# binding.pry
       merge_configs(find_env, load_config, load_sekrets)
     end
 
@@ -42,7 +40,11 @@ class ConfigReader
       ''
     end
 
-    def method_missing(key)
+    def method_missing(key, *args, &block)
+      if key.to_s.end_with?('=')
+        raise ArgumentError.new('ConfigReader is immutable')
+      end
+
       config[key] || nil
     end
 
@@ -51,7 +53,9 @@ class ConfigReader
     end
 
     def find_env
-      if defined?(Rails) && Rails.env
+      if defined?(Rails) && Rails.stage
+        Rails.stage
+      elsif defined?(Rails) && Rails.env
         Rails.env
       elsif defined?(RAILS_ENV)
         RAILS_ENV

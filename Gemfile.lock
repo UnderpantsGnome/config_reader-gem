@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    config_reader (1.0.0)
+    config_reader (1.0.1)
 
 GEM
   remote: http://rubygems.org/

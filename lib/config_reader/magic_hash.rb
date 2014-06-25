@@ -19,7 +19,7 @@ class ConfigReader
       fetch(key.to_sym)
     end
 
-    def method_missing(key)
+    def method_missing(key, *args, &block)
       has_key?(key) ?
         fetch(key) :
         super
