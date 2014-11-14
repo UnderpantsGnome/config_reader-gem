@@ -53,7 +53,7 @@ class ConfigReader
     end
 
     def find_env
-      if defined?(Rails) && Rails.stage
+      if defined?(Rails) && Rails.respond_to?(:stage)
         Rails.stage
       elsif defined?(Rails) && Rails.env
         Rails.env
@@ -71,7 +71,7 @@ class ConfigReader
     end
 
     def load_config
-      raise 'No config file set' unless @config_file
+      raise 'No config file set' unless find_config
 
       if defined?(ERB)
         conf = YAML.load(ERB.new(File.open(find_config).read).result)
