@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    config_reader (1.0.2)
+    config_reader (1.0.3)
+      deep_merge
 
 GEM
   remote: http://rubygems.org/
@@ -11,6 +12,7 @@ GEM
     coderay (1.1.0)
     coerce (0.0.6)
       chronic (>= 0.6.2)
+    deep_merge (1.1.1)
     fattr (2.2.2)
     highline (1.6.21)
     main (6.0.0)
@@ -43,3 +45,6 @@ DEPENDENCIES
   rake
   rspec (= 1.3.2)
   sekrets (~> 1.7.0)
+
+BUNDLED WITH
+   1.15.1

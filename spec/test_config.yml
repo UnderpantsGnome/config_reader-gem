@@ -6,3 +6,5 @@ defaults:
 
 test:
   app_name: test_app
+  nested_key:
+    only_in_test_env: true

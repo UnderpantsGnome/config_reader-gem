@@ -94,6 +94,10 @@ describe "ConfigReader" do
       it "should find sekrets only nested values using [] and a string" do
         SekretsConfig['nested_key']['value'].should == 'test_sekret'
       end
+
+      it "shouldn't need to have all keys duplicated in the environment section" do
+        SekretsConfig.nested_key.only_in_test_env.should == true
+      end
     end
   end
 end
