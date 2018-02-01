@@ -21,35 +21,28 @@ Example config file:
   test:
     blackbird: false
 
-Example class:
-
-  class MyConfig < ConfigReader
-    self.config_file = 'config/my_config.yml'
-  end
-
-don't throw errors on missing keys
-
-  class MyConfig < ConfigReader
-    self.config_file = 'config/my_config.yml'
-    self.ignore_missing_keys = true
-  end
-
 == Sekrets
-Now also includes Sekrets integration. https://github.com/ahoward/sekrets
+
+Includes Sekrets integration. See https://github.com/ahoward/sekrets for more information.
 
 The format of the sekrets file is the same as the regular file.
 
-Example class with Sekrets:
+== Setup
 
   class MyConfig < ConfigReader
-    self.config_file = 'config/my_config.yml'
-    self.sekrets_file = 'config/my_config.yml.enc'
+    configure do |config|
+      config.environment = Rails.env # (set this however you access the env in your app)
+      config.config_file = 'config/my_config.yml'
+      config.sekrets_file = 'config/my_config.yml.enc' # (default nil)
+      config.ignore_missing_keys = true # (default false, raises KeyError)
+    end
   end
 
-Usage:
+== Usage
 
   MyConfig.mail_from   #=> noreply@example.com
   MyConfig[:mail_from] #=> noreply@example.com
+  MyConfig['mail_from'] #=> noreply@example.com
 
 == Note on Patches/Pull Requests
 
@@ -63,4 +56,4 @@ Usage:
 
 == Copyright
 
-Copyright (c) 2008 Michael Moen. See LICENSE for details.
+Copyright (c) 2008-2018 Michael Moen. See LICENSE for details.

@@ -1,4 +1,7 @@
 class NoKeyNoErrorConfig < ConfigReader
-  self.config_file = 'spec/test_config.yml'
-  self.ignore_missing_keys = true
+  configure do |config|
+    config.environment = 'test'
+    config.config_file = 'spec/test_config.yml'
+    config.ignore_missing_keys = true
+  end
 end

@@ -1,5 +1,5 @@
-require "config_reader/version"
-require "config_reader/magic_hash"
+require 'config_reader/version'
+require 'config_reader/magic_hash'
 require 'yaml'
 require 'deep_merge'
 
@@ -11,23 +11,15 @@ end
 
 class ConfigReader
   class << self
-    attr_accessor :config_file, :config, :sekrets_file, :ignore_missing_keys
+    attr_accessor :configuration
 
     def config
       @config = nil unless defined?(@config)
       @config ||= reload
     end
 
-    def config_file=(file)
-      @config_file = file
-    end
-
-    def ignore_missing_keys=(bool)
-      @ignore_missing_keys = bool
-    end
-
     def reload
-      merge_configs(find_env, load_config, load_sekrets)
+      merge_configs(load_config, load_sekrets)
     end
 
     def [](key)
@@ -35,14 +27,14 @@ class ConfigReader
     end
 
     def find_config
-      return @config_file if File.exist?(@config_file)
+      return configuration.config_file if File.exist?(configuration.config_file)
 
       %w( . config ).each do |dir|
-        config_file = File.join(dir, @config_file)
+        config_file = File.join(dir, configuration.config_file)
         return config_file if File.exist?(config_file)
       end
 
-      ''
+      nil
     end
 
     def method_missing(key, *args, &block)
@@ -55,24 +47,6 @@ class ConfigReader
 
     def inspect
       puts config.inspect
-    end
-
-    def find_env
-      if defined?(Rails) && Rails.respond_to?(:stage)
-        Rails.stage
-      elsif defined?(Rails) && Rails.env
-        Rails.env
-      elsif defined?(RAILS_ENV)
-        RAILS_ENV
-      elsif defined?(Padrino) && Padrino.env
-        Padrino.env.to_s
-      elsif defined?(PADRINO_ENV)
-        PADRINO_ENV
-      elsif ENV['RACK_ENV']
-        ENV['RACK_ENV']
-      elsif defined?(APP_ENV)
-        APP_ENV
-      end
     end
 
     def load_config
@@ -92,10 +66,10 @@ class ConfigReader
     def load_sekrets
       sekrets = {}
 
-      if @sekrets_file
+      if configuration.sekrets_file
         begin
           require 'sekrets'
-          sekrets = ::Sekrets.settings_for(@sekrets_file)
+          sekrets = ::Sekrets.settings_for(configuration.sekrets_file)
           raise 'No sekrets found' unless sekrets
         rescue LoadError
           $stderr.puts "You specified a sekrets_file, but the sekrets gem isn't available."
@@ -105,12 +79,37 @@ class ConfigReader
       sekrets
     end
 
-    def merge_configs(env, conf, sekrets)
+    def merge_configs(conf, sekrets)
+      env = configuration.environment
+
       _conf = conf['defaults']
       _conf.deep_merge!(sekrets['defaults']) if sekrets && sekrets['defaults']
       _conf.deep_merge!(conf[env]) if conf[env]
       _conf.deep_merge!(sekrets[env]) if sekrets && sekrets[env]
-      ConfigReader::MagicHash.convert_hash(_conf, @ignore_missing_keys)
+
+      MagicHash.convert_hash(_conf, configuration.ignore_missing_keys)
+    end
+
+    def configure
+      self.configuration ||= Configuration.new
+      yield(configuration)
+    end
+
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+  end
+
+  class Configuration
+    attr_accessor :config_file, :sekrets_file, :ignore_missing_keys, :environment
+
+    def initialize
+      @config_file = nil
+      @sekrets_file = nil
+      @ignore_missing_keys = false
+      @environment = nil
     end
   end
+
 end

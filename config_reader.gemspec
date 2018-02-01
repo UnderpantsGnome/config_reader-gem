@@ -25,4 +25,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '1.3.2'
   s.add_development_dependency 'sekrets', '~> 1.7.0'
   s.add_development_dependency 'pry'
+
+  s.post_install_message = "If you are are upgrading from a pre 2.x version, please see the configuration changes in the README https://github.com/UnderpantsGnome/config_reader-gem/blob/master/README.rdoc"
 end
