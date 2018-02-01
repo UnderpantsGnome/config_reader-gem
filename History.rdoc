@@ -1,3 +1,6 @@
+== 1.0.5 2018-02-01
+* pass ignore_missing_keys to nested hashes during conversion
+
 == 1.0.4 2018-02-01
 * add a config option for Key Error behavior
 

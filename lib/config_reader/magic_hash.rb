@@ -8,7 +8,7 @@ class ConfigReader
 
       hash.each_pair do |key, value|
         if value.is_a?(Hash)
-          magic_hash[key.to_sym] = convert_hash(value)
+          magic_hash[key.to_sym] = convert_hash(value, ignore_missing_keys)
         else
           magic_hash[key.to_sym] = value
         end
@@ -21,7 +21,7 @@ class ConfigReader
       begin
         fetch(key.to_sym)
       rescue KeyError => e
-        raise e unless @ignore_missing_keys
+        raise e unless ignore_missing_keys
       end
     end
 
@@ -30,8 +30,8 @@ class ConfigReader
         has_key?(key) ?
           fetch(key) :
           super
-      rescue KeyError => e
-        raise e unless @ignore_missing_keys
+      rescue KeyError, NoMethodError => e
+        raise e unless ignore_missing_keys
       end
     end
 

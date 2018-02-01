@@ -28,6 +28,18 @@ describe "ConfigReader" do
         TestConfig.no_key
       }.to raise_error(KeyError)
     end
+
+    it "should raise on missing nested key with [] accessor" do
+      expect {
+        TestConfig[:nested_key][:missing]
+      }.to raise_error(KeyError)
+    end
+
+    it "should raise on missing nested key with #key accessor" do
+      expect {
+        TestConfig.nested_key.missing
+      }.to raise_error(NoMethodError)
+    end
   end
 
   describe "ignoring KeyNotFound" do
@@ -40,6 +52,18 @@ describe "ConfigReader" do
     it "should not raise on missing key with #key accessor" do
       expect {
         NoKeyNoErrorConfig.no_key
+      }.to_not raise_error
+    end
+
+    it "should not raise on missing nested key with [] accessor" do
+      expect {
+        NoKeyNoErrorConfig[:nested_key][:missing]
+      }.to_not raise_error
+    end
+
+    it "should not raise on missing nested key with #key accessor" do
+      expect {
+        NoKeyNoErrorConfig.nested_key.missing
       }.to_not raise_error
     end
   end
