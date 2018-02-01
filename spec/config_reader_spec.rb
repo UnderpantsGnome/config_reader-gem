@@ -16,6 +16,34 @@ describe "ConfigReader" do
     end
   end
 
+  describe "default KeyNotFound behavior" do
+    it "should raise on missing key with [] accessor" do
+      expect {
+        TestConfig[:no_key]
+      }.to raise_error(KeyError)
+    end
+
+    it "should raise on missing key with #key accessor" do
+      expect {
+        TestConfig.no_key
+      }.to raise_error(KeyError)
+    end
+  end
+
+  describe "ignoring KeyNotFound" do
+    it "should not raise on missing key with [] accessor" do
+      expect {
+        NoKeyNoErrorConfig[:no_key]
+      }.to_not raise_error
+    end
+
+    it "should not raise on missing key with #key accessor" do
+      expect {
+        NoKeyNoErrorConfig.no_key
+      }.to_not raise_error
+    end
+  end
+
   describe "parsing a YAML file" do
     it "should find values with method_missing" do
       TestConfig.app_name.should == 'test_app'
@@ -56,8 +84,6 @@ describe "ConfigReader" do
   end
 
   context 'using sekrets' do
-    ENV['SEKRETS_KEY'] = 'shhh'
-
     describe "parsing a YAML file" do
       it "should find values with method_missing" do
         SekretsConfig.app_name.should == 'test_app_sekret'

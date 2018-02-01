@@ -11,7 +11,7 @@ end
 
 class ConfigReader
   class << self
-    attr_accessor :config_file, :config, :sekrets_file
+    attr_accessor :config_file, :config, :sekrets_file, :ignore_missing_keys
 
     def config
       @config = nil unless defined?(@config)
@@ -20,6 +20,10 @@ class ConfigReader
 
     def config_file=(file)
       @config_file = file
+    end
+
+    def ignore_missing_keys=(bool)
+      @ignore_missing_keys = bool
     end
 
     def reload
@@ -106,7 +110,7 @@ class ConfigReader
       _conf.deep_merge!(sekrets['defaults']) if sekrets && sekrets['defaults']
       _conf.deep_merge!(conf[env]) if conf[env]
       _conf.deep_merge!(sekrets[env]) if sekrets && sekrets[env]
-      ConfigReader::MagicHash.convert_hash(_conf)
+      ConfigReader::MagicHash.convert_hash(_conf, @ignore_missing_keys)
     end
   end
 end

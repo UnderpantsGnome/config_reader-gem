@@ -27,6 +27,13 @@ Example class:
     self.config_file = 'config/my_config.yml'
   end
 
+don't throw errors on missing keys
+
+  class MyConfig < ConfigReader
+    self.config_file = 'config/my_config.yml'
+    self.ignore_missing_keys = true
+  end
+
 == Sekrets
 Now also includes Sekrets integration. https://github.com/ahoward/sekrets
 

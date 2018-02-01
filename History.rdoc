@@ -1,3 +1,6 @@
+== 1.0.4 2018-02-01
+* add a config option for Key Error behavior
+
 == 1.0.3 2017-06-20
 * add the deep_merge gem so all keys don't need to be duplicated across env sections
 

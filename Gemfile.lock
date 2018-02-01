@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    config_reader (1.0.3)
+    config_reader (1.0.4)
       deep_merge
 
 GEM
@@ -47,4 +47,4 @@ DEPENDENCIES
   sekrets (~> 1.7.0)
 
 BUNDLED WITH
-   1.15.1
+   1.16.1
