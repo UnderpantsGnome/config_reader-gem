@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    config_reader (1.0.5)
+    config_reader (2.0.0)
       deep_merge
 
 GEM
