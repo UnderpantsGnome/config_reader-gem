@@ -11,8 +11,6 @@ Gem::Specification.new do |s|
   s.summary     = %q{Provides a way to manage environment specific configuration settings.}
   s.description = %q{Provides a way to manage environment specific configuration settings.}
 
-  s.rubyforge_project = 'config_reader'
-
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
@@ -22,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'deep_merge'
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', '1.3.2'
+  s.add_development_dependency 'rspec', '~> 3.9'
   s.add_development_dependency 'sekrets', '~> 1'
   s.add_development_dependency 'pry'
 
