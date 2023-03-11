@@ -1,7 +1,6 @@
 require 'config_reader/version'
 require 'config_reader/magic_hash'
 require 'yaml'
-require 'deep_merge'
 
 begin
   require 'erb'
@@ -83,9 +82,9 @@ class ConfigReader
       env = configuration.environment
 
       _conf = conf['defaults']
-      _conf.deep_merge!(sekrets['defaults']) if sekrets && sekrets['defaults']
-      _conf.deep_merge!(conf[env]) if conf[env]
-      _conf.deep_merge!(sekrets[env]) if sekrets && sekrets[env]
+      deep_merge!(_conf, sekrets['defaults']) if sekrets && sekrets['defaults']
+      deep_merge!(_conf, conf[env]) if conf[env]
+      deep_merge!(_conf, sekrets[env]) if sekrets && sekrets[env]
 
       MagicHash.convert_hash(_conf, configuration.ignore_missing_keys)
     end
@@ -99,6 +98,15 @@ class ConfigReader
       @configuration ||= Configuration.new
     end
 
+    def deep_merge!(hash, other_hash)
+      hash.merge!(other_hash) do |key, this_val, other_val|
+        if this_val.is_a?(Hash) && other_val.is_a?(Hash)
+          deep_merge!(this_val, other_val)
+        else
+          other_val
+        end
+      end
+    end
   end
 
   class Configuration

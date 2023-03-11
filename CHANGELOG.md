@@ -1,3 +1,7 @@
+### 2.0.2 2023-03-11
+
+- remove deep-merge dependency
+
 ### 2.0.1 2010-03-19
 
 - update dependencies
