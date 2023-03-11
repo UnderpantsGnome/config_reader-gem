@@ -23,6 +23,16 @@ Example config file:
     production:
       site_url: http://example.com
 
+## Ruby 3.1 and 3.2
+
+If you want to use Sekrets with these versions of Ruby you need to use this version until upstream gets updated.
+
+```ruby
+gem "sekrets",
+  github: "UnderpantsGnome/sekrets",
+  branch: "ruby-3-2-support"
+```
+
 ## Sekrets
 
 Includes Sekrets integration. See <https://github.com/ahoward/sekrets> for more
