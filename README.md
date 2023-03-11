@@ -1,11 +1,9 @@
 # ConfigReader
 
-[<img
-src="https://codeclimate.com/github/UnderpantsGnome/config_reader-gem.png"
-/>](https://codeclimate.com/github/UnderpantsGnome/config_reader-gem)
-<img
-src="https://github.com/UnderpantsGnome/config_reader-gem/actions/workflows/ruby.yml/badge.svg"
-/>
+![Maintainability](<img
+src="https://codeclimate.com/github/UnderpantsGnome/config_reader-gem.png"/>](https://codeclimate.com/github/UnderpantsGnome/config_reader-gem)
+![Maintainability](<img src="https://github.com/UnderpantsGnome/config_reader-gem/actions/workflows/ruby.yml/badge.svg" />)
+![Ruby 3.0+](<imgsrc="<https://img.shields.io/badge/Ruby-3.0%2B-green>/>)
 
 Provides a way to manage environment specific configuration settings. It will
 use the defaults for any environment and override any values you specify for
