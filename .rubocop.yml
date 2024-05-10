@@ -1,0 +1,64 @@
+# https://docs.rubocop.org/en/latest/cops_layout/
+
+require: rubocop-rspec
+
+AllCops:
+  Exclude:
+    - "app/controllers/graphql_controller.rb"
+    - "app/graphql/vivo_point_schema.rb"
+    - "bin/**/*"
+    - "config/**/*"
+    - "db/**/*"
+    - "lib/util.rb"
+    - "node_modules/**/*"
+    - "script/**/*"
+    - "spec/**/*"
+  TargetRubyVersion: 2.6
+
+Rails/UnknownEnv:
+  Environments:
+    - development
+    - test
+    - staging
+    - uat
+    - production
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/BlockLength:
+  ExcludedMethods:
+    - "generate_jwt!"
+    - "guard"
+    - "included"
+    - "namespace"
+
+Metrics/MethodLength:
+  ExcludedMethods:
+    - "generate_jwt!"
+    - "add_resource_roles_to_user"
+  Max: 15
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/AndOr:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/MultilineMemoization:
+  EnforcedStyle: braces
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/YodaCondition:
+  EnforcedStyle: require_for_equality_operators_only

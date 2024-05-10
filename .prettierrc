@@ -1,0 +1,6 @@
+{
+  "plugins": ["@prettier/plugin-ruby"],
+  "editor.tabSize": 2,
+  "editor.useTabStops": true,
+  "files.trimTrailingWhitespace": true
+}

@@ -1,20 +1,26 @@
-require 'config_reader/version'
-require 'config_reader/magic_hash'
-require 'yaml'
+require "config_reader/version"
+require "config_reader/magic_hash"
+require "yaml"
 
 begin
-  require 'erb'
+  require "erb"
 rescue LoadError
   puts "ERB not found, you won't be able to use ERB in your config"
 end
 
 class ConfigReader
   class << self
-    attr_accessor :configuration
+    attr_reader :configuration
 
     def config
       @config = nil unless defined?(@config)
       @config ||= reload
+    end
+
+    def dig(*args)
+      args.map!(&:to_sym) if args.respond_to?(:map!)
+
+      config.dig(*args)
     end
 
     def reload
@@ -28,7 +34,7 @@ class ConfigReader
     def find_config
       return configuration.config_file if File.exist?(configuration.config_file)
 
-      %w( . config ).each do |dir|
+      %w[. config].each do |dir|
         config_file = File.join(dir, configuration.config_file)
         return config_file if File.exist?(config_file)
       end
@@ -37,11 +43,15 @@ class ConfigReader
     end
 
     def method_missing(key, *args, &block)
-      if key.to_s.end_with?('=')
-        raise ArgumentError.new('ConfigReader is immutable')
+      if key.to_s.end_with?("=")
+        raise ArgumentError.new("ConfigReader is immutable")
       end
 
       config[key] || nil
+    end
+
+    def respond_to_missing?(m, *)
+      config.key?(m)
     end
 
     def inspect
@@ -49,15 +59,16 @@ class ConfigReader
     end
 
     def load_config
-      raise 'No config file set' unless find_config
+      raise "No config file set" unless find_config
 
-      if defined?(ERB)
-        conf = YAML.load(ERB.new(File.open(find_config).read).result)
-      else
-        conf = YAML.load(File.open(find_config).read)
-      end
+      conf =
+        if defined?(ERB)
+          YAML.load(ERB.new(File.read(find_config)).result)
+        else
+          YAML.load_file(File.read(find_config))
+        end
 
-      raise 'No config found' unless conf
+      raise "No config found" unless conf
 
       conf
     end
@@ -67,11 +78,11 @@ class ConfigReader
 
       if configuration.sekrets_file
         begin
-          require 'sekrets'
+          require "sekrets"
           sekrets = ::Sekrets.settings_for(configuration.sekrets_file)
-          raise 'No sekrets found' unless sekrets
+          raise "No sekrets found" unless sekrets
         rescue LoadError
-          $stderr.puts "You specified a sekrets_file, but the sekrets gem isn't available."
+          warn "You specified a sekrets_file, but the sekrets gem isn't available."
         end
       end
 
@@ -81,12 +92,16 @@ class ConfigReader
     def merge_configs(conf, sekrets)
       env = configuration.environment
 
-      _conf = conf['defaults']
-      deep_merge!(_conf, sekrets['defaults']) if sekrets && sekrets['defaults']
-      deep_merge!(_conf, conf[env]) if conf[env]
-      deep_merge!(_conf, sekrets[env]) if sekrets && sekrets[env]
+      defaults = conf["defaults"]
 
-      MagicHash.convert_hash(_conf, configuration.ignore_missing_keys)
+      if sekrets && sekrets["defaults"]
+        deep_merge!(defaults, sekrets["defaults"])
+      end
+
+      deep_merge!(defaults, conf[env]) if conf[env]
+      deep_merge!(defaults, sekrets[env]) if sekrets && sekrets[env]
+
+      MagicHash.convert_hash(defaults, configuration.ignore_missing_keys)
     end
 
     def configure
@@ -110,7 +125,10 @@ class ConfigReader
   end
 
   class Configuration
-    attr_accessor :config_file, :sekrets_file, :ignore_missing_keys, :environment
+    attr_accessor :config_file,
+                  :sekrets_file,
+                  :ignore_missing_keys,
+                  :environment
 
     def initialize
       @config_file = nil
@@ -119,5 +137,4 @@ class ConfigReader
       @environment = nil
     end
   end
-
 end
