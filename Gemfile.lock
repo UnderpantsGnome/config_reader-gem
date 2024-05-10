@@ -13,7 +13,7 @@ GIT
 PATH
   remote: .
   specs:
-    config_reader (2.0.2)
+    config_reader (2.0.3)
 
 GEM
   remote: http://rubygems.org/
