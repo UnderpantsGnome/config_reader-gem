@@ -1,8 +1,8 @@
-### 2.0.4 2025-05-17
+### 2.0.4 2024-05-17
 
 - [update rexml](https://github.com/UnderpantsGnome/config_reader-gem/pull/5)
 
-### 2.0.3 2025-05-10
+### 2.0.3 2024-05-10
 
 - add dig method to be able to extract nested values programmatically
 
