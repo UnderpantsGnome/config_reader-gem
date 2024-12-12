@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description =
     "Provides a way to manage environment specific configuration settings."
 
-  spec.files = Dir.glob("{lib,spec}/**/*") + %w[CHANGELOG.md LICENSE README.md]
+  spec.files = Dir.glob("{lib,spec}/**/*") + %w[CHANGELOG.md README.md]
 
   spec.require_paths = ["lib"]
 
