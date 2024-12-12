@@ -14,10 +14,7 @@ Gem::Specification.new do |spec|
   spec.description =
     "Provides a way to manage environment specific configuration settings."
 
-  spec.files = `git ls-files`.split("\n")
-
-  spec.executables =
-    `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  spec.files = Dir.glob("{lib,spec}/**/*") + %w[CHANGELOG.md LICENSE README.md]
 
   spec.require_paths = ["lib"]
 
