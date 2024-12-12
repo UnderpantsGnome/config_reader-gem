@@ -31,6 +31,17 @@ describe "ConfigReader" do
     end
   end
 
+  describe "all envs available" do
+    it "should have all envs available" do
+      expect(TestConfig.envs.keys).to eq(%w[test not_test])
+    end
+
+    it "should have ConfigHash for all envs" do
+      expect(TestConfig.envs["test"].app_name).to eq("test_app")
+      expect(TestConfig.envs["not_test"].app_name).to eq("not_test_app")
+    end
+  end
+
   describe "#dig" do
     it "finds values as symbols" do
       expect(TestConfig.dig(*%i[nested_key value])).to eq("test")

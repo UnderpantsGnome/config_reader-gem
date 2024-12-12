@@ -1,9 +1,0 @@
----
-defaults:
-  app_name: default_app_sekret
-  sekret_only: yup
-  nested_key:
-    value: test_sekret
-
-test:
-  app_name: test_app_sekret

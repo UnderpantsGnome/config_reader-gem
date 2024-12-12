@@ -1,10 +1,5 @@
 class SekretsConfig < ConfigReader
-  secret_file =
-    if RUBY_VERSION > "3.0"
-      "spec/sekrets_ruby_3_2.yml.enc"
-    else
-      "spec/sekrets_config.yml.enc"
-    end
+  secret_file = "spec/sekrets_config.yml.enc"
 
   configure do |config|
     config.environment = "test"
