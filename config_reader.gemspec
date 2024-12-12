@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "abbrev", ">= 0"
+  s.add_dependency "psych", "~> 5.2", ">= 5.2.1"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.9"

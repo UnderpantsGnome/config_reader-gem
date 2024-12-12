@@ -1,6 +1,6 @@
 require "config_reader/version"
 require "config_reader/config_hash"
-require "yaml"
+require "psych"
 
 begin
   require "erb"
@@ -66,9 +66,9 @@ class ConfigReader
 
       conf =
         if defined?(ERB)
-          YAML.load(ERB.new(File.read(find_config)).result, aliases: true)
+          Psych.load(ERB.new(File.read(find_config)).result, aliases: true)
         else
-          YAML.load_file(File.read(find_config), aliases: true)
+          Psych.load_file(File.read(find_config), aliases: true)
         end
 
       raise "No config found" unless conf
