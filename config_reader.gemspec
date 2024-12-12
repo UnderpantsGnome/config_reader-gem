@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.9"
-  s.add_development_dependency "sekrets", ">= 0"
+  s.add_development_dependency "sekrets", "~> 1.14"
   s.add_development_dependency "pry"
 
   s.post_install_message = <<~EOS
