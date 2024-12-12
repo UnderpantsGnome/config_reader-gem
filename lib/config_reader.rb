@@ -66,9 +66,17 @@ class ConfigReader
 
       conf =
         if defined?(ERB)
-          Psych.safe_load(ERB.new(File.read(find_config)).result, aliases: true)
+          Psych.safe_load(
+            ERB.new(File.read(find_config)).result,
+            aliases: true,
+            permitted_classes: configuration.permitted_classes.to_a + [Symbol]
+          )
         else
-          Psych.safe_load_file(File.read(find_config), aliases: true)
+          Psych.safe_load_file(
+            File.read(find_config),
+            aliases: true,
+            permitted_classes: configuration.permitted_classes.to_a + [Symbol]
+          )
         end
 
       raise "No config found" unless conf
@@ -135,15 +143,17 @@ class ConfigReader
 
   class Configuration
     attr_accessor :config_file,
-                  :sekrets_file,
+                  :environment,
                   :ignore_missing_keys,
-                  :environment
+                  :permitted_classes,
+                  :sekrets_file
 
     def initialize
       @config_file = nil
-      @sekrets_file = nil
-      @ignore_missing_keys = false
       @environment = nil
+      @ignore_missing_keys = false
+      @permitted_classes = []
+      @sekrets_file = nil
     end
   end
 end
