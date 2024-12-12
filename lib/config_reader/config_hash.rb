@@ -25,7 +25,7 @@ class ConfigReader
 
     def method_missing(key, *args, &block)
       key?(key) ? fetch(key) : super
-    rescue KeyError, NoMethodError => e
+    rescue KeyError, NoMethodError => e # skipcq: RB-P1001
       raise e unless ignore_missing_keys
     end
 

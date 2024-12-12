@@ -31,7 +31,7 @@ class ConfigReader
     end
 
     def deep_merge(hash, other_hash)
-      hash.merge!(other_hash) do |key, this_val, other_val|
+      hash.merge!(other_hash) do |_key, this_val, other_val|
         if this_val.is_a?(Hash) && other_val.is_a?(Hash)
           deep_merge(this_val, other_val)
         else

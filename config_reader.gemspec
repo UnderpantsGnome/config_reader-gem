@@ -7,15 +7,21 @@ Gem::Specification.new do |s|
   s.authors = ["Michael Moen"]
   s.email = ["michael@underpantsgnome.com"]
   s.homepage = "https://github.com/UnderpantsGnome/config_reader-gem"
+
   s.summary =
     "Provides a way to manage environment specific configuration settings."
+
   s.description =
     "Provides a way to manage environment specific configuration settings."
 
   s.files = `git ls-files`.split("\n")
+
   s.executables =
     `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+
   s.require_paths = ["lib"]
+
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   s.add_dependency "abbrev", ">= 0"
   s.add_dependency "psych", "~> 5.2", ">= 5.2.1"
