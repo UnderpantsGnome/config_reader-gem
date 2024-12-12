@@ -1,34 +1,49 @@
 require "config_reader/version"
-require "config_reader/magic_hash"
+require "config_reader/config_hash"
 require "yaml"
 
 begin
   require "erb"
 rescue LoadError
-  puts "ERB not found, you won't be able to use ERB in your config"
+  warn "ERB not found, you won't be able to use ERB in your config"
 end
 
 class ConfigReader
   class << self
-    attr_reader :configuration
+    attr_reader :envs
+
+    def [](key)
+      config[key.to_sym]
+    end
 
     def config
       @config = nil unless defined?(@config)
       @config ||= reload
     end
 
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      self.configuration ||= Configuration.new
+      yield(configuration)
+    end
+
+    def deep_merge(hash, other_hash)
+      hash.merge!(other_hash) do |key, this_val, other_val|
+        if this_val.is_a?(Hash) && other_val.is_a?(Hash)
+          deep_merge(this_val, other_val)
+        else
+          other_val
+        end
+      end
+    end
+
     def dig(*args)
       args.map!(&:to_sym) if args.respond_to?(:map!)
 
       config.dig(*args)
-    end
-
-    def reload
-      merge_configs(load_config, load_sekrets)
-    end
-
-    def [](key)
-      config[key.to_sym]
     end
 
     def find_config
@@ -42,18 +57,6 @@ class ConfigReader
       nil
     end
 
-    def method_missing(key, *args, &block)
-      if key.to_s.end_with?("=")
-        raise ArgumentError.new("ConfigReader is immutable")
-      end
-
-      config[key] || nil
-    end
-
-    def respond_to_missing?(m, *)
-      config.key?(m)
-    end
-
     def inspect
       puts config.inspect
     end
@@ -63,9 +66,9 @@ class ConfigReader
 
       conf =
         if defined?(ERB)
-          YAML.load(ERB.new(File.read(find_config)).result)
+          YAML.load(ERB.new(File.read(find_config)).result, aliases: true)
         else
-          YAML.load_file(File.read(find_config))
+          YAML.load_file(File.read(find_config), aliases: true)
         end
 
       raise "No config found" unless conf
@@ -90,37 +93,43 @@ class ConfigReader
     end
 
     def merge_configs(conf, sekrets)
+      @envs = {}
+      env_keys = conf.keys - ["defaults"]
       env = configuration.environment
 
       defaults = conf["defaults"]
 
       if sekrets && sekrets["defaults"]
-        deep_merge!(defaults, sekrets["defaults"])
+        defaults = deep_merge(defaults, sekrets["defaults"])
       end
 
-      deep_merge!(defaults, conf[env]) if conf[env]
-      deep_merge!(defaults, sekrets[env]) if sekrets && sekrets[env]
+      env_keys.each do |key|
+        key_hash = deep_merge(defaults, conf[key]) if conf[key]
+        key_hash = deep_merge(defaults, sekrets[key]) if sekrets && sekrets[key]
 
-      MagicHash.convert_hash(defaults, configuration.ignore_missing_keys)
-    end
-
-    def configure
-      self.configuration ||= Configuration.new
-      yield(configuration)
-    end
-
-    def configuration
-      @configuration ||= Configuration.new
-    end
-
-    def deep_merge!(hash, other_hash)
-      hash.merge!(other_hash) do |key, this_val, other_val|
-        if this_val.is_a?(Hash) && other_val.is_a?(Hash)
-          deep_merge!(this_val, other_val)
-        else
-          other_val
-        end
+        @envs[key] = ConfigHash.convert_hash(
+          key_hash,
+          configuration.ignore_missing_keys
+        )
       end
+
+      @envs[env]
+    end
+
+    def method_missing(key, *_args, &)
+      if key.to_s.end_with?("=")
+        raise ArgumentError.new("ConfigReader is immutable")
+      end
+
+      config[key] || nil
+    end
+
+    def reload
+      merge_configs(load_config, load_sekrets)
+    end
+
+    def respond_to_missing?(m, *)
+      config.key?(m)
     end
   end
 

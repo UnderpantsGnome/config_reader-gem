@@ -1,20 +1,20 @@
 class ConfigReader
-  class MagicHash < Hash
+  class ConfigHash < Hash
     attr_accessor :ignore_missing_keys
 
     def self.convert_hash(hash, ignore_missing_keys = false)
-      magic_hash = new
-      magic_hash.ignore_missing_keys = ignore_missing_keys
+      config_hash = new
+      config_hash.ignore_missing_keys = ignore_missing_keys
 
       hash.each_pair do |key, value|
-        magic_hash[key.to_sym] = if value.is_a?(Hash)
+        config_hash[key.to_sym] = if value.is_a?(Hash)
           convert_hash(value, ignore_missing_keys)
         else
           value
         end
       end
 
-      magic_hash
+      config_hash
     end
 
     def [](key)

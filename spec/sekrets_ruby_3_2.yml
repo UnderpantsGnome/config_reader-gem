@@ -7,3 +7,6 @@ defaults:
 
 test:
   app_name: test_app_sekret
+
+not_test:
+  app_name: not_test_app_sekret

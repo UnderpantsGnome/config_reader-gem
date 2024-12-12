@@ -14,10 +14,12 @@ PATH
   remote: .
   specs:
     config_reader (2.0.4)
+      abbrev
 
 GEM
   remote: http://rubygems.org/
   specs:
+    abbrev (0.1.2)
     arrayfields (4.9.2)
     ast (2.4.2)
     chronic (0.10.2)
