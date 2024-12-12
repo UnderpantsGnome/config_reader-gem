@@ -116,7 +116,7 @@ class ConfigReader
       @envs[env]
     end
 
-    def method_missing(key, *_args, &)
+    def method_missing(key, *_args, &_block)
       if key.to_s.end_with?("=")
         raise ArgumentError.new("ConfigReader is immutable")
       end
