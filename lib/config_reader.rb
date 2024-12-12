@@ -66,9 +66,9 @@ class ConfigReader
 
       conf =
         if defined?(ERB)
-          Psych.load(ERB.new(File.read(find_config)).result, aliases: true)
+          Psych.safe_load(ERB.new(File.read(find_config)).result, aliases: true)
         else
-          Psych.load_file(File.read(find_config), aliases: true)
+          Psych.safe_load_file(File.read(find_config), aliases: true)
         end
 
       raise "No config found" unless conf
