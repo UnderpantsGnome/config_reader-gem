@@ -36,11 +36,11 @@ class ConfigReader
     end
 
     def deep_merge(hash, other_hash)
-      hash.merge(other_hash) do |_key, this_val, other_val|
+      hash.merge(other_hash) do |key, this_val, other_val|
         if this_val.is_a?(Hash) && other_val.is_a?(Hash)
           deep_merge(this_val, other_val)
         else
-          other_val
+          hash[key] = other_val
         end
       end
     end
@@ -63,7 +63,7 @@ class ConfigReader
     end
 
     def inspect
-      puts config.inspect
+      config.inspect
     end
 
     def load_config
@@ -110,8 +110,8 @@ class ConfigReader
       @envs = {}
 
       (conf.keys - ["defaults"]).each do |env|
-        key_hash = deep_merge(defaults, conf[env]) if conf[env]
-        key_hash = deep_merge(defaults, sekrets[env]) if sekrets&.[](env)
+        key_hash = deep_merge(defaults.dup, conf[env]) if conf[env]
+        key_hash = deep_merge(key_hash, sekrets[env]) if sekrets&.[](env)
 
         @envs[env] = ConfigHash.convert_hash(
           key_hash,

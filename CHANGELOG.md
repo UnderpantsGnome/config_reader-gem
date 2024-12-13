@@ -1,10 +1,14 @@
 # Changelog
 
-## 3.0.1 2024-12-13
+## 3.0.2 2024-12-13
+
+Fix an issue when merging multiple envs.
+
+## 3.0.1 2024-12-13 (yanked)
 
 Don't merge! in deep_merge
 
-## 3.0.0 2024-12-12
+## 3.0.0 2024-12-12 (yanked)
 
 Update to latest Sekrets (1.14.0)
 Explicitly require abbrev gem

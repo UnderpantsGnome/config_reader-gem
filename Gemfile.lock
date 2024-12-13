@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    config_reader (3.0.1)
+    config_reader (3.0.2)
       abbrev
       psych (~> 5.2, >= 5.2.1)
 
