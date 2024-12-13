@@ -3,6 +3,11 @@ require "config_reader/config_hash"
 require "psych"
 
 begin
+  require "sekrets"
+rescue LoadError
+end
+
+begin
   require "erb"
 rescue LoadError
   warn "ERB not found, you won't be able to use ERB in your config"
@@ -64,20 +69,7 @@ class ConfigReader
     def load_config
       raise "No config file set" unless find_config
 
-      conf =
-        if defined?(ERB)
-          Psych.safe_load(
-            ERB.new(File.read(find_config)).result,
-            aliases: true,
-            permitted_classes: configuration.permitted_classes.to_a + [Symbol]
-          )
-        else
-          Psych.safe_load_file(
-            File.read(find_config),
-            aliases: true,
-            permitted_classes: configuration.permitted_classes.to_a + [Symbol]
-          )
-        end
+      conf = load_yaml
 
       raise "No config found" unless conf
 
@@ -85,19 +77,33 @@ class ConfigReader
     end
 
     def load_sekrets
-      sekrets = {}
-
       if configuration.sekrets_file
-        begin
-          require "sekrets"
-          sekrets = ::Sekrets.settings_for(configuration.sekrets_file)
-          raise "No sekrets found" unless sekrets
-        rescue LoadError
-          warn "You specified a sekrets_file, but the sekrets gem isn't available."
+        if !defined?(::Sekrets)
+          raise ArgumentError,
+                "You specified a sekrets_file, but the sekrets gem isn't available."
+        else
+          ::Sekrets.settings_for(configuration.sekrets_file) ||
+            raise("No sekrets found")
         end
       end
+    end
 
-      sekrets
+    def load_yaml
+      permitted_classes = configuration.permitted_classes.to_a + [Symbol]
+
+      if defined?(ERB)
+        Psych.safe_load(
+          ERB.new(File.read(find_config)).result,
+          aliases: true,
+          permitted_classes: permitted_classes
+        )
+      else
+        Psych.safe_load_file(
+          File.read(find_config),
+          aliases: true,
+          permitted_classes: permitted_classes
+        )
+      end
     end
 
     def merge_configs(conf, sekrets)

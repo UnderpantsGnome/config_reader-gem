@@ -27,7 +27,7 @@ describe "ConfigReader" do
     end
 
     it "should raise on missing nested key with #key accessor" do
-      expect { TestConfig.nested_key.missing }.to raise_error(NoMethodError)
+      expect { TestConfig.nested_key.missing }.to raise_error(KeyError)
     end
   end
 
