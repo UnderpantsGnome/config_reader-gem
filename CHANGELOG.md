@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1 2024-12-13
+
+Don't merge! in deep_merge
+
 ## 3.0.0 2024-12-12
 
 Update to latest Sekrets (1.14.0)
