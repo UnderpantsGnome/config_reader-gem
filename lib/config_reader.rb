@@ -106,28 +106,30 @@ class ConfigReader
       end
     end
 
-    def merge_configs(conf, sekrets)
+    def merge_all_configs(conf, defaults, sekrets)
       @envs = {}
-      env_keys = conf.keys - ["defaults"]
-      env = configuration.environment
 
-      defaults = conf["defaults"]
+      (conf.keys - ["defaults"]).each do |env|
+        key_hash = deep_merge(defaults, conf[env]) if conf[env]
+        key_hash = deep_merge(defaults, sekrets[env]) if sekrets&.[](env)
 
-      if sekrets && sekrets["defaults"]
-        defaults = deep_merge(defaults, sekrets["defaults"])
-      end
-
-      env_keys.each do |key|
-        key_hash = deep_merge(defaults, conf[key]) if conf[key]
-        key_hash = deep_merge(defaults, sekrets[key]) if sekrets && sekrets[key]
-
-        @envs[key] = ConfigHash.convert_hash(
+        @envs[env] = ConfigHash.convert_hash(
           key_hash,
           configuration.ignore_missing_keys
         )
       end
+    end
 
-      @envs[env]
+    def merge_configs(conf, sekrets)
+      defaults = conf["defaults"]
+
+      if sekrets&.[]("defaults")
+        defaults = deep_merge(defaults, sekrets["defaults"])
+      end
+
+      merge_all_configs(conf, defaults, sekrets)
+
+      @envs[configuration.environment]
     end
 
     def method_missing(key, *_args, &_block)
