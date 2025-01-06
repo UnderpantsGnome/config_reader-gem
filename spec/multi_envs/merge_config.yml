@@ -1,0 +1,15 @@
+---
+defaults:
+  app_name: default_app
+  nested_key:
+    value: test
+
+test:
+  app_name: test_app
+  nested_key:
+    only_in_test_env: true
+
+not_test:
+  app_name: not_test_app
+
+merge:

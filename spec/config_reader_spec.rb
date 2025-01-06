@@ -33,7 +33,8 @@ describe "ConfigReader" do
 
   describe "all envs available" do
     it "should have all envs available" do
-      expect(TestConfig.envs.keys).to eq(%w[test not_test])
+      TestConfig.reload
+      expect(TestConfig.envs.keys).to eq(%w[defaults test not_test])
     end
 
     it "should have ConfigHash for all envs" do
