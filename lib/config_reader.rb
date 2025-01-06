@@ -40,7 +40,7 @@ class ConfigReader
         if this_val.is_a?(Hash) && other_val.is_a?(Hash)
           deep_merge(this_val, other_val)
         else
-          hash[key] = other_val
+          other_val
         end
       end
     end
@@ -109,12 +109,12 @@ class ConfigReader
     def merge_all_configs(conf, defaults, sekrets)
       @envs = {}
 
-      (conf.keys - ["defaults"]).each do |env|
-        key_hash = deep_merge(defaults.dup, conf[env]) if conf[env]
-        key_hash = deep_merge(key_hash, sekrets[env]) if sekrets&.[](env)
+      conf.keys.each do |env|
+        env_hash = deep_merge(defaults, conf[env] || {})
+        env_hash = deep_merge(env_hash, sekrets[env] || {}) if sekrets
 
         @envs[env] = ConfigHash.convert_hash(
-          key_hash,
+          env_hash,
           configuration.ignore_missing_keys
         )
       end

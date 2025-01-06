@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3 2025-01-06
+
+Fix a bug in deep merge where values weren't getting set properly.
+
 ## 3.0.2 2024-12-13
 
 Fix an issue when merging multiple envs.

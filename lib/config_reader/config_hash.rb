@@ -28,7 +28,7 @@ class ConfigReader
     end
 
     def respond_to_missing?(m, *)
-      config.key?(m)
+      key?(m)
     end
   end
 end
