@@ -141,7 +141,7 @@ class ConfigReader
     end
 
     def reload
-      merge_configs(load_config, load_sekrets)
+      @config = merge_configs(load_config, load_sekrets)
     end
 
     def respond_to_missing?(m, *)

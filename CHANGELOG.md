@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.4 2024-06-10
+
+Make reload actually reload, useful in development.
+
 ## 3.0.3 2025-01-06
 
 Fix a bug in deep merge where values weren't getting set properly.
