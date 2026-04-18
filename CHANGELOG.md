@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.0 2026-04-18
+
+Add `parse_path` and `dig_path` for dotted user input.
+Fix config loading edge cases for false values, arrays, and missing config state.
+Update the README and load Sekrets lazily unless it is configured.
+
 ## 3.0.4 2024-06-10
 
 Make reload actually reload, useful in development.
