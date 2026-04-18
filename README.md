@@ -1,59 +1,179 @@
 # ConfigReader
 
-[![Maintainability](https://codeclimate.com/github/UnderpantsGnome/config_reader-gem.png)](https://codeclimate.com/github/UnderpantsGnome/config_reader-gem)
 ![Specs](https://github.com/UnderpantsGnome/config_reader-gem/actions/workflows/ruby.yml/badge.svg)
 ![Ruby 3.0+](https://img.shields.io/badge/Ruby-%3E%3D%203.0-success)
 
-Provides a way to manage environment specific configuration settings. It will
-use the defaults for any environment and override any values you specify for
-an environment.
+`ConfigReader` loads environment-specific settings from YAML, merges each
+environment with `defaults`, and exposes the result through method access,
+hash access, and `dig`.
 
-Example config file:
+## Installation
 
-    defaults:
-      site_url: http://localhost:3000
-      host_name: example.com
-      mail_from: noreply@example.com
-      site_name: example
-      admin_email: admin@example.com
+Add the gem to your application's Gemfile:
 
-    production:
-      site_url: http://example.com
+```ruby
+gem "config_reader"
+```
 
-## Sekrets
+If you use encrypted config files with `sekrets_file`, add `sekrets` too:
 
-Includes Sekrets integration. See <https://github.com/ahoward/sekrets> for more
-information.
+```ruby
+gem "sekrets", "~> 1.14"
+```
 
-The format of the sekrets file is the same as the regular file.
+## Config Format
+
+`defaults` is required. `config.environment` must match one of the top-level
+environment keys in the file.
+
+```yaml
+defaults:
+  site_url: http://localhost:3000
+  host_name: example.com
+  mail_from: noreply@example.com
+  features:
+    search: true
+
+production:
+  site_url: http://example.com
+
+test:
+  features:
+    search: false
+```
 
 ## Setup
 
-    class MyConfig < ConfigReader
-      configure do |config|
-        config.environment = Rails.env # (set this however you access the env in your app)
-        config.config_file = "config/my_config.yml"
-        config.sekrets_file = "config/my_config.yml.enc" # (default nil)
-        config.ignore_missing_keys = true # (default false, raises KeyError)
-      end
-    end
+```ruby
+class MyConfig < ConfigReader
+  configure do |config|
+    config.environment = Rails.env
+    config.config_file = "config/my_config.yml"
+    config.sekrets_file = "config/my_config.yml.enc" # optional
+    config.ignore_missing_keys = false # default
+    config.permitted_classes = [] # optional
+  end
+end
+```
+
+`config_file` may be an exact path. If that path does not exist, ConfigReader
+also checks the current directory and `config/`.
 
 ## Usage
 
-    MyConfig.mail_from    #=> noreply@example.com
-    MyConfig[:mail_from]  #=> noreply@example.com
-    MyConfig["mail_from"] #=> noreply@example.com
+Top-level and nested values are available through methods, `[]`, and `dig`:
 
-## Note on Patches/Pull Requests
+```ruby
+MyConfig.mail_from
+MyConfig[:mail_from]
+MyConfig["mail_from"]
 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don"t break it in a future
-    version unintentionally.
-* Commit, do not mess with rakefile, version, or history. (if you want to
-    have your own version, that is fine but bump version in a commit by itself
-    I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+MyConfig.features.search
+MyConfig[:features][:search]
+MyConfig.dig(:features, :search)
+```
+
+Arrays work with `dig` too:
+
+```ruby
+MyConfig.dig(:servers, 0, :host)
+```
+
+If you want to read a dotted path from user input, use `dig_path`:
+
+```ruby
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require_relative "../app/lib/config"
+
+print Config.dig_path(ARGV.fetch(0))
+```
+
+`parse_path` is also public if you need the normalized path segments:
+
+```ruby
+MyConfig.parse_path("servers.0.host")
+# => [:servers, 0, :host]
+```
+
+String paths treat numeric segments as array indexes. If you need a literal key
+that contains `.` or looks numeric, pass an array instead:
+
+```ruby
+MyConfig.dig_path([:numeric_keys, "0"])
+MyConfig.dig_path(["smtp.example.com"])
+```
+
+You can inspect the resolved config for all environments and reload it at
+runtime:
+
+```ruby
+MyConfig.envs["production"]
+MyConfig.reload
+```
+
+By default, missing keys raise `KeyError`. To return `nil` instead:
+
+```ruby
+class LenientConfig < ConfigReader
+  configure do |config|
+    config.environment = Rails.env
+    config.config_file = "config/my_config.yml"
+    config.ignore_missing_keys = true
+  end
+end
+```
+
+## Sekrets
+
+ConfigReader supports Sekrets integration, but only loads the `sekrets` gem
+when `sekrets_file` is configured.
+
+The sekrets file uses the same structure as the main config file. Sekrets
+values are merged after the normal defaults plus environment merge, so matching
+sekrets values override plain YAML values.
+
+```ruby
+class SecureConfig < ConfigReader
+  configure do |config|
+    config.environment = Rails.env
+    config.config_file = "config/my_config.yml"
+    config.sekrets_file = "config/my_config.yml.enc"
+  end
+end
+```
+
+See <https://github.com/ahoward/sekrets> for more information.
+
+## Advanced YAML
+
+ERB is evaluated before the YAML is parsed:
+
+```yaml
+defaults:
+  cache_url: <%= ENV.fetch("CACHE_URL", "redis://localhost:6379/0") %>
+```
+
+YAML is loaded with `Psych.safe_load`. `Symbol` is always permitted, and you
+can allow additional classes through `permitted_classes`:
+
+```ruby
+class TypedConfig < ConfigReader
+  configure do |config|
+    config.environment = Rails.env
+    config.config_file = "config/my_config.yml"
+    config.permitted_classes = [Date, Time]
+  end
+end
+```
+
+## Contributing
+
+- Fork the project.
+- Make your change.
+- Add or update tests.
+- Open a pull request.
 
 ## Copyright
 

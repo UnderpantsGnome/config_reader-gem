@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
+require "open3"
 require "config_reader"
 require "test_config"
 require "sekrets_config"
