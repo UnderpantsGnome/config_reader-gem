@@ -24,7 +24,7 @@ GEM
       tilt
     highline (1.7.10)
     io-console (0.8.2)
-    json (2.13.2)
+    json (2.19.9)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
