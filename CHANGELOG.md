@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 2026-08-05
+
+- [Bump json from 2.13.2 to 2.19.9](https://github.com/UnderpantsGnome/config_reader-gem/pull/14)
+
 ## 3.1.0 2026-04-18
 
 Add `parse_path` and `dig_path` for dotted user input.
